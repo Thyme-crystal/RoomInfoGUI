@@ -15,6 +15,7 @@ namespace RoomInfoGUI
     {
         private Texture2D bgTex;
         private GUIStyle boxStyle;
+        private GUIStyle textstyle;
 
         public Plugin()
         {
@@ -37,6 +38,15 @@ namespace RoomInfoGUI
                 boxStyle.alignment = TextAnchor.MiddleCenter;
                 boxStyle.normal.textColor = Color.black;
                 boxStyle.normal.background = bgTex;
+            }
+
+            if (textstyle == null)
+            {
+                textstyle = new GUIStyle(GUI.skin.label);
+                textstyle.fontSize = 12;
+                textstyle.alignment = TextAnchor.MiddleCenter;
+                textstyle.fontStyle = FontStyle.Bold;
+                textstyle.normal.textColor = Color.white;
             }
 
             GUILayout.BeginHorizontal(boxStyle);
@@ -64,21 +74,36 @@ namespace RoomInfoGUI
                 if (PhotonNetwork.InRoom)
                 {
 
-                    foreach (var player in PhotonNetwork.PlayerList)
+                    foreach (VRRig rig in GorillaParent.instance.vrrigs)
                     {
-                        string text = PlayerListMSG + player.NickName;
+                        string platform = Platform(rig);
 
-                        if (player.IsMasterClient)
+                        string platformColored = platform;
+
+                        if (platform.Contains("STEAM", System.StringComparison.OrdinalIgnoreCase))
+                            platformColored = "<color=blue>" + platform + "</color>";
+
+                        if (platform.Contains("QUEST", System.StringComparison.OrdinalIgnoreCase))
+                            platformColored = "<color=cyan>" + platform + "</color>";
+
+                        if (platform.Contains("PC?", System.StringComparison.OrdinalIgnoreCase))
+                            platformColored = "<color=yellow>" + platform + "</color>";
+
+                        string text = $"{PlayerListMSG}{rig.OwningNetPlayer.NickName} [{platformColored}]";
+
+                        if (rig.OwningNetPlayer.IsMasterClient)
                             text += " <color=red>[Master]</color>";
 
-                        if (player.IsLocal)
+                        if (rig.OwningNetPlayer.IsLocal)
                             text += " <color=green>[You]</color>";
-                        GUILayout.Label(text);
+
+                        GUILayout.Label(text, textstyle);
                     }
+
                 }
                 else
                 {
-                    GUILayout.Label("N/A");
+                    GUILayout.Label("N/A", textstyle);
                 }
                 GUILayout.EndVertical();
             }
@@ -89,20 +114,38 @@ namespace RoomInfoGUI
 
                 if (PhotonNetwork.InRoom)
                 {
-                    GUILayout.Label("Room Info!");
-                    GUILayout.Label(PhotonNetwork.CurrentRoom.Name);
-                    GUILayout.Label(PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-                    GUILayout.Label(PhotonNetwork.MasterClient.ToString());
-                    GUILayout.Label(PhotonNetwork.CloudRegion);
+                    GUILayout.Label(PhotonNetwork.CurrentRoom.Name, textstyle);
+                    GUILayout.Label(PhotonNetwork.CurrentRoom.PlayerCount.ToString() + " Players.", textstyle);
+                    GUILayout.Label("Master: " + PhotonNetwork.MasterClient.ToString(), textstyle);
+                    GUILayout.Label("Region: " + PhotonNetwork.CloudRegion, textstyle);
                 }
                 else
                 {
-                    GUILayout.Label("N/A");
+                    GUILayout.Label("N/A", textstyle);
                 }
 
                 GUILayout.EndVertical();
             }
         }
+
+        public static string Platform(VRRig rig)
+        {
+            string platform = rig.concatStringOfCosmeticsAllowed;
+
+            if (platform.Contains("S. FIRST LOGIN"))
+            {
+                return "STEAM";
+            }
+            else if (platform.Contains("FIRST LOGIN"))
+            {
+                return "PC?";
+            }
+            else
+            {
+                return "QUEST";
+            }
+        }
+
         public static bool PlayerList = false;
         public static bool RoomINFO = false;
         public static string PlayerListMSG = " ";
