@@ -80,13 +80,13 @@ namespace RoomInfoGUI
 
                         string platformColored = platform;
 
-                        if (platform.Contains("STEAM", System.StringComparison.OrdinalIgnoreCase))
+                        if (platform.Contains("STEAM"))
                             platformColored = "<color=blue>" + platform + "</color>";
 
-                        if (platform.Contains("QUEST", System.StringComparison.OrdinalIgnoreCase))
+                        if (platform.Contains("QUEST"))
                             platformColored = "<color=cyan>" + platform + "</color>";
 
-                        if (platform.Contains("PC?", System.StringComparison.OrdinalIgnoreCase))
+                        if (platform.Contains("PC?"))
                             platformColored = "<color=yellow>" + platform + "</color>";
 
                         string text = $"{PlayerListMSG}{rig.OwningNetPlayer.NickName} [{platformColored}]";
