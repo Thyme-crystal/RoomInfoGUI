@@ -78,24 +78,35 @@ namespace RoomInfoGUI
                     {
                         string platform = Platform(rig);
 
-                        string platformColored = platform;
+                        string platformCL = platform;
 
                         if (platform.Contains("STEAM"))
-                            platformColored = "<color=blue>" + platform + "</color>";
+                        {
+                            platformCL = "<color=blue>" + platform + "</color>";
+                        }
+                           
 
                         if (platform.Contains("QUEST"))
-                            platformColored = "<color=cyan>" + platform + "</color>";
+                        {
+                            platformCL = "<color=cyan>" + platform + "</color>";
+                        }
 
                         if (platform.Contains("PC?"))
-                            platformColored = "<color=yellow>" + platform + "</color>";
+                        {
+                            platformCL = "<color=yellow>" + platform + "</color>";
+                        }
 
-                        string text = $"{PlayerListMSG}{rig.OwningNetPlayer.NickName} [{platformColored}]";
+                        string text = $"{PlayerListMSG}{rig.OwningNetPlayer.NickName} [{platformCL}]";
 
                         if (rig.OwningNetPlayer.IsMasterClient)
+                        {
                             text += " <color=red>[Master]</color>";
+                        }
 
                         if (rig.OwningNetPlayer.IsLocal)
+                        {
                             text += " <color=green>[You]</color>";
+                        }
 
                         GUILayout.Label(text, textstyle);
                     }
