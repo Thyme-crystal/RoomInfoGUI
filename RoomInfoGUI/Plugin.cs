@@ -74,8 +74,11 @@ namespace RoomInfoGUI
                 if (PhotonNetwork.InRoom)
                 {
 
-                    foreach (VRRig rig in GorillaParent.instance.vrrigs)
+                    foreach (VRRig rig in VRRigCache.ActiveRigs)
                     {
+                        if (rig == null)
+                            return;
+
                         string platform = Platform(rig);
 
                         string platformCL = platform;
@@ -84,7 +87,7 @@ namespace RoomInfoGUI
                         {
                             platformCL = "<color=blue>" + platform + "</color>";
                         }
-                           
+
 
                         if (platform.Contains("QUEST"))
                         {
@@ -96,14 +99,14 @@ namespace RoomInfoGUI
                             platformCL = "<color=yellow>" + platform + "</color>";
                         }
 
-                        string text = $"{PlayerListMSG}{rig.OwningNetPlayer.NickName} [{platformCL}]";
+                        string text = $"{PlayerListMSG}{rig.creator.NickName} [{platformCL}]";
 
-                        if (rig.OwningNetPlayer.IsMasterClient)
+                        if (rig.creator.IsMasterClient)
                         {
                             text += " <color=red>[Master]</color>";
                         }
 
-                        if (rig.OwningNetPlayer.IsLocal)
+                        if (rig.creator.IsLocal)
                         {
                             text += " <color=green>[You]</color>";
                         }
@@ -141,7 +144,7 @@ namespace RoomInfoGUI
 
         public static string Platform(VRRig rig)
         {
-            string platform = rig.concatStringOfCosmeticsAllowed;
+            string platform = rig._playerOwnedCosmetics.Concat();
 
             if (platform.Contains("S. FIRST LOGIN"))
             {
