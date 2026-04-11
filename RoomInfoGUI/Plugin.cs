@@ -135,7 +135,15 @@ namespace RoomInfoGUI
                 }
                 else
                 {
-                    GUILayout.Label("N/A", textstyle);
+                    GUILayout.Label("Not in a Room.", textstyle);
+                }
+
+                RoomCode = GUILayout.TextField(RoomCode);
+
+                if (GUILayout.Button("Join"))
+                {
+                    RoomCode = RoomCode.ToUpper();
+                    PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(RoomCode, JoinType.Solo);
                 }
 
                 GUILayout.EndVertical();
@@ -163,5 +171,6 @@ namespace RoomInfoGUI
         public static bool PlayerList = false;
         public static bool RoomINFO = false;
         public static string PlayerListMSG = " ";
+        public static string RoomCode = "Room Code";
     }
 }
